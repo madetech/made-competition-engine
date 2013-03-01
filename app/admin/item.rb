@@ -48,7 +48,7 @@ if defined?(ActiveAdmin)
 
     member_action :entries do
       respond_to do |format|
-        format.csv { render text: Competition::Item.find(params[:id]).populateEntriesCsv }
+        format.csv { render :text => Competition::Item.find(params[:id]).populateEntriesCsv }
       end
     end
 
