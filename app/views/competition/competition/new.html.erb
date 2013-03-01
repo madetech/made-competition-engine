@@ -1,0 +1,8 @@
+<div class="item">
+	<%= image_tag(@competition_item.image.url(:small)) %>
+	<dl>
+		<dt><%= @competition_item.title %></dt>
+		<dd><%= @competition_item.description %></dd>
+	</dl>
+</div>
+<%= render :partial => "form" %>

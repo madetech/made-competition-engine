@@ -1,0 +1,16 @@
+<% if !@competition_items.blank? %>
+	<ul>
+		<% @competition_items.each do |competition_item| %>
+			<li class="item">
+				<%= link_to image_tag(competition_item.image.url(:small)), competition_new_path(:slug => competition_item.slug) %>
+				<dl>
+					<dt><%= competition_item.title %></dt>
+					<dd><%= competition_item.description %></dd>
+				</dl>
+				<%= link_to "#{t('competition.enter_the_competition')}".html_safe, competition_new_path(:slug => competition_item.slug) %>
+			</li>
+		<% end %>
+	</ul>
+<% else %>
+	No competitions
+<% end %>
