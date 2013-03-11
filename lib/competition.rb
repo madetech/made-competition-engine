@@ -1,4 +1,5 @@
 require "competition/engine"
+require 'stringex'
 
 module Competition
   class Engine < Rails::Engine

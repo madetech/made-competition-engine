@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency "rails",       "~> 3.2.11"
   s.add_dependency "paperclip",   "~> 3.0"
   s.add_dependency "country-select"
+  s.add_dependency "stringex"
   # s.add_dependency "jquery-rails"
 
   s.add_development_dependency "sqlite3"

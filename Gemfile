@@ -3,7 +3,8 @@ gemspec
 
 gem "jquery-rails"
 gem "country-select"
-gem "paperclip",   		"~> 3.0"
+gem "paperclip",        "~> 3.0"
+gem 'stringex',         '~> 1.5.1'
 
 group :test do
   gem 'brakeman'

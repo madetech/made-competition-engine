@@ -1,5 +1,4 @@
-if defined?(ActiveAdmin)
-
+if defined?(ActiveAdmin) and Competition.config.use_engine_admin
   ActiveAdmin.register Competition::Item do
     controller do
       cache_sweeper Competition.config.cache_sweeper if Competition.config.cache_sweeper
@@ -23,7 +22,6 @@ if defined?(ActiveAdmin)
     form do |f|
       f.inputs "Competition" do
         f.input :title,         :wrapper_html => { :class => "default" }
-        f.input :slug,          :wrapper_html => { :class => "default" }
         f.input :description,   :wrapper_html => { :class => "default" }
         f.input :image,         :wrapper_html => { :class => "default" }, :as => :file,
                                 :hint => f.template.image_tag(f.object.image.url(:thumb))
@@ -51,7 +49,5 @@ if defined?(ActiveAdmin)
         format.csv { render text: Competition::Item.find(params[:id]).populateEntriesCsv }
       end
     end
-
   end
-
 end

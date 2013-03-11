@@ -2,38 +2,47 @@ module Competition
 
   class Item < ActiveRecord::Base
 
-    has_many :item_entries, :foreign_key => :competition_item_id
-    accepts_nested_attributes_for :item_entries, :allow_destroy => true
+    has_many                          :item_entries, :foreign_key => :competition_item_id
+    accepts_nested_attributes_for     :item_entries, :allow_destroy => true
 
-    has_many :item_additional_fields, :foreign_key => :competition_item_id
-    accepts_nested_attributes_for :item_additional_fields, :allow_destroy => true
+    has_many                          :item_additional_fields, :foreign_key => :competition_item_id
+    accepts_nested_attributes_for     :item_additional_fields, :allow_destroy => true
 
-    attr_accessible :title,
-                    :slug,
-                    :description,
-                    :start_at,
-                    :end_at,
-                    :image,
-                    :image_file_name,
-                    :image_content_type,
-                    :image_file_size,
-                    :image_updated_at,
-                    :item_additional_field,
-                    :item_additional_fields_attributes
+    attr_accessible                   :title,
+                                      :url,
+                                      :description,
+                                      :start_at,
+                                      :end_at,
+                                      :image,
+                                      :image_file_name,
+                                      :image_content_type,
+                                      :image_file_size,
+                                      :image_updated_at,
+                                      :item_additional_field,
+                                      :item_additional_fields_attributes
 
-    has_attached_file :image, :styles => {
-      :main => Competition.config.main_item_image_size,
-      :secondary => Competition.config.secondary_item_image_size,
-      :mobile => Competition.config.mobile_item_image_size,
-      :thumb => Competition.config.item_thumb_size
-    }
+    has_attached_file                 :image, :styles => {
+                                        :main => Competition.config.main_item_image_size,
+                                        :secondary => Competition.config.secondary_item_image_size,
+                                        :mobile => Competition.config.mobile_item_image_size,
+                                        :thumb => Competition.config.item_thumb_size
+                                      }
 
-    validates :title, :presence => true, :uniqueness => true
-    validates :slug, :presence => true, :uniqueness => true
-    validates :description, :presence => true
-    validates :start_at, :presence => true
-    validates :end_at, :presence => true
-    validates :image, :presence => true
+    validates                         :title, :presence => true, :uniqueness => true
+    validates                         :description, :presence => true
+    validates                         :start_at, :presence => true
+    validates                         :end_at, :presence => true
+    validates                         :image, :presence => true
+
+    acts_as_url                       :title
+
+    def to_param
+      url
+    end
+
+    def to_s
+      title
+    end
 
     def self.getAllLiveCompetitions
       self.find(:all, :conditions => [ "start_at < ? AND end_at > ?", DateTime.now, DateTime.now ])
