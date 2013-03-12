@@ -44,11 +44,27 @@ module Competition
       title
     end
 
-    def self.getAllLiveCompetitions
+    def has_additional_fields
+      if self.item_additional_fields.blank?
+        return false
+      else
+        return true
+      end
+    end
+
+    def is_entered(entry, additional_fields = nil)
+      if self.has_additional_fields
+        return (entry.save and Competition::ItemEntryAdditionalField.create_from_form(entry.id, additional_fields))
+      else
+        return entry.save
+      end
+    end
+
+    def self.get_all_live_competitions
       self.find(:all, :conditions => [ "start_at < ? AND end_at > ?", DateTime.now, DateTime.now ])
     end
 
-    def isLive
+    def is_live
       if self.start_at < DateTime.now and self.end_at > DateTime.now
         return true
       else

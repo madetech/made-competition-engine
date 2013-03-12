@@ -3,7 +3,7 @@ require 'faker'
 FactoryGirl.define do
   factory :item, class: Competition::Item do |f|
     f.title 				{ Faker::Name.title }
-    f.slug 					{ Faker::Lorem.characters(char_count = 32) }
+    f.url 					{ Faker::Lorem.characters(char_count = 32) }
     f.description 			{ Faker::Lorem.sentence(word_count = 6, supplemental = false) }
     #f.title 				{ "This is a title" }
     #f.slug 				{ "this-is-a-title" }

@@ -1,4 +1,4 @@
-<%= form_for(@item_entry, :url => competition_create_path(@params_slug), :html => {:class => 'form-competition-entry'}) do |f| %>
+<%= form_for(@item_entry, :url => competition_create_path(@competition_item.url), :html => {:class => 'form-competition-entry'}) do |f| %>
 	<div class="form-field">
 		<%= f.label :first_name, "#{t('competition.first_name')}".html_safe %>
 		<%= f.text_field :first_name, :class => 'required' %>

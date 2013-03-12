@@ -39,21 +39,21 @@ describe "Competition::Item" do
 		item2 = Competition::Item.create(FactoryGirl.attributes_for(:item, start_at: DateTime.now+3.months, end_at: DateTime.now+6.months))
 		#---
 		Competition::Item.all.length.should eq(3)
-		Competition::Item.getAllLiveCompetitions.length.should eq(2)
+		Competition::Item.get_all_live_competitions.length.should eq(2)
 	end
 
 	it "should be live" do
 		item = Competition::Item.create(FactoryGirl.attributes_for(:item, start_at: DateTime.now-3.months, end_at: DateTime.now+3.months))
 		item.save
 		#---
-		item.isLive.should be_true
+		item.is_live.should be_true
 	end
 
 	it "should not be live" do
 		item = Competition::Item.create(FactoryGirl.attributes_for(:item, start_at: DateTime.now+3.months, end_at: DateTime.now+6.months))
 		item.save
 		#---
-		item.isLive.should_not be_true
+		item.is_live.should_not be_true
 	end
 
 end
