@@ -26,7 +26,6 @@ module Competition
                                   :last_name,
                                   :address_1,
                                   :city,
-                                  :county,
                                   :postcode,
                                   :country,
                                   :competition_item_id
