@@ -19,9 +19,8 @@ module Competition
                                   :country,
                                   :competition_item_id
 
-    validates_format_of           :email, :with => /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i
+    validates_format_of           :email, :with => /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/
     validates_uniqueness_of       :email, :scope => :competition_item_id
-
     validates_presence_of         :first_name,
                                   :last_name,
                                   :address_1,
