@@ -61,7 +61,7 @@ module Competition
     end
 
     def self.get_all_live_competitions
-      self.find(:all, :conditions => [ "start_at < ? AND end_at > ?", DateTime.now, DateTime.now ])
+      self.where("start_at < ? AND end_at > ?", DateTime.now, DateTime.now)
     end
 
     def is_live
