@@ -4,7 +4,7 @@ if defined?(ActiveAdmin) and Competition.config.use_engine_admin
       cache_sweeper Competition.config.cache_sweeper if Competition.config.cache_sweeper
     end
 
-    menu :label => 'Manage Competitions', :parent => "Competitions"
+    menu :label => 'Competitions'
 
     index do
       column :title
