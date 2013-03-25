@@ -20,8 +20,8 @@ module Competition
   mattr_accessor :engine_routing
   @@engine_routing = true
 
-  mattr_accessor :use_engine_admin
-  @@use_engine_admin = true
+  mattr_accessor :engine_active_admin
+  @@engine_active_admin = true
 
   mattr_accessor :competition_item_entry_class
   @@competition_item_entry_class = false

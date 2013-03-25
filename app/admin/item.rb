@@ -1,4 +1,4 @@
-if defined?(ActiveAdmin) and Competition.config.use_engine_admin
+if defined?(ActiveAdmin) and Competition.config.engine_active_admin
   ActiveAdmin.register Competition::Item do
     controller do
       cache_sweeper Competition.config.cache_sweeper if Competition.config.cache_sweeper

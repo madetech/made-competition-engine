@@ -6,6 +6,6 @@ Competition.config do |config|
   config.mobile_item_image_size = "150x150#"
   config.item_thumb_size = "70x70#"
 
-  config.use_engine_admin = true
+  config.engine_active_admin = true
   config.engine_routing = true
 end
