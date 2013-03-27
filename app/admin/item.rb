@@ -4,6 +4,14 @@ if defined?(ActiveAdmin) and Competition.config.engine_active_admin
       cache_sweeper Competition.config.cache_sweeper if Competition.config.cache_sweeper
     end
 
+    action_item :only => :index do
+      link_to "View Competitions on site", competition_path
+    end
+
+    action_item :only => :show do
+      link_to "View Competition on site", competition_new_path(competition_item.url)
+    end
+
     menu :label => 'Competitions'
 
     index do
