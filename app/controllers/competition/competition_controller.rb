@@ -10,7 +10,6 @@ module Competition
     def new
       @competition_item = Competition::Item.find_by_url(params[:slug])
       @item_entry = Competition.config.competition_item_entry_class.new
-
       if !@competition_item.is_live
         render :action => :expired
       elsif @competition_item.nil?
