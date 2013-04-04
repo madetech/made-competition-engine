@@ -1,6 +1,11 @@
 module Competition
 
   class Item < ActiveRecord::Base
+    if Competition.config.engine_routing
+      include Competition::Engine.routes.url_helpers
+    else
+      include Rails.application.routes.url_helpers
+    end
 
     has_many                          :item_entries, :foreign_key => :competition_item_id
     accepts_nested_attributes_for     :item_entries, :allow_destroy => true
@@ -70,6 +75,26 @@ module Competition
       else
         return false
       end
+    end
+
+    def get_canonical_url
+      competition_new_path(self)
+    end
+
+    def get_parent_url
+      competition_path
+    end
+
+    def get_change_frequency
+      "weekly"
+    end
+
+    def get_sitemap_priority
+      "0.8"
+    end
+
+    def get_sitemap_title
+      self.title
     end
 
     def populateEntriesCsv

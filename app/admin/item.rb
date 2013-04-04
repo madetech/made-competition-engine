@@ -45,7 +45,7 @@ if defined?(ActiveAdmin) and Competition.config.engine_active_admin
         end
       end
 
-      f.buttons
+      f.actions
     end
 
     action_item :only => :show do
