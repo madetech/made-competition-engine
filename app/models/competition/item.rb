@@ -24,7 +24,8 @@ module Competition
                                       :image_file_size,
                                       :image_updated_at,
                                       :item_additional_field,
-                                      :item_additional_fields_attributes
+                                      :item_additional_fields_attributes,
+                                      :order
 
     has_attached_file                 :image, :styles => {
                                         :main => Competition.config.main_item_image_size,
@@ -38,8 +39,11 @@ module Competition
     validates                         :start_at, :presence => true
     validates                         :end_at, :presence => true
     validates                         :image, :presence => true
+    validates                         :order, :presence => true
 
     acts_as_url                       :title
+
+    default_scope                     :order => '`order` ASC'
 
     def to_param
       url

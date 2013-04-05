@@ -33,6 +33,7 @@ if defined?(ActiveAdmin) and Competition.config.engine_active_admin
         f.input :description,   :wrapper_html => { :class => "default" }
         f.input :image,         :wrapper_html => { :class => "default" }, :as => :file,
                                 :hint => f.template.image_tag(f.object.image.url(:thumb))
+        f.input :order,         :hint => 'Order that the competition appears in on the site'
         f.input :start_at,      :wrapper_html => { :class => "default" }, :as => :datepicker
         f.input :end_at,        :wrapper_html => { :class => "default" }, :as => :datepicker
       end
