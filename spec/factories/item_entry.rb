@@ -12,7 +12,6 @@ FactoryGirl.define do
     f.county                { "Tower Hamlets" }
     f.postcode              { Faker::Address.zip_code }
     f.country               { Faker::Address.country }
-    f.promotional_code      { "1234567890" }
     f.competition_item_id   { 1 }
   end
 end

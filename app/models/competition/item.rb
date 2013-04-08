@@ -117,7 +117,6 @@ module Competition
       row_header << "County"
       row_header << "Postcode"
       row_header << "Country"
-      row_header << "Promotional Code"
       self.item_additional_fields.each do |item_additional_field|
         row_header << item_additional_field.label
       end
@@ -137,7 +136,6 @@ module Competition
         row_line << item_entry.county
         row_line << item_entry.postcode
         row_line << item_entry.country
-        row_line << item_entry.promotional_code
         competition_item_entry_additional_fields = Competition::ItemEntryAdditionalField.find(:all, :conditions => { :competition_item_entry_id => item_entry.id })
         self.item_additional_fields.each do |item_additional_field|
           competition_item_entry_additional_fields.each do |item_entry_additional_field|
