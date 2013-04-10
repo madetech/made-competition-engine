@@ -25,7 +25,8 @@ module Competition
                                       :image_updated_at,
                                       :item_additional_field,
                                       :item_additional_fields_attributes,
-                                      :order
+                                      :order,
+                                      :terms
 
     has_attached_file                 :image, :styles => {
                                         :main => Competition.config.main_item_image_size,
