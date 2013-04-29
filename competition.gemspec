@@ -7,11 +7,12 @@ require "competition/version"
 Gem::Specification.new do |s|
   s.name        = "competition"
   s.version     = Competition::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Competition."
-  s.description = "TODO: Description of Competition."
+  s.authors     = ["Seb Ashton"]
+  s.email       = ["seb@madebymade.co.uk"]
+  s.homepage    = "http://www.madebymade.co.uk/"
+  s.summary     = "Competition engine."
+  s.description = "Rails engine that provides the ability to create competitions"
+
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
