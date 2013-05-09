@@ -1,11 +1,14 @@
-module Competition
+require 'csv'
 
+module Competition
   class Item < ActiveRecord::Base
     if Competition.config.engine_routing
       include Competition::Engine.routes.url_helpers
     else
       include Rails.application.routes.url_helpers
     end
+
+    EXPORT_IGNORED_FIELDS = [:updated_at, :competition_item_id, :type]
 
     has_many                          :item_entries, :foreign_key => :competition_item_id
     accepts_nested_attributes_for     :item_entries, :allow_destroy => true
@@ -75,11 +78,7 @@ module Competition
     end
 
     def is_live
-      if self.start_at < DateTime.now and self.end_at > DateTime.now
-        return true
-      else
-        return false
-      end
+      self.start_at < DateTime.now and self.end_at > DateTime.now
     end
 
     def get_canonical_url
@@ -102,64 +101,66 @@ module Competition
       self.title
     end
 
-    def populateEntriesCsv
-      array_output = []
+    def export_entries_as_csv
+      contents = []
+      contents << get_csv_header
+      contents.concat(get_csv_body)
 
-      # Populate Header
-
-      row_header = []
-      row_header << "First Name"
-      row_header << "Last Name"
-      row_header << "email"
-      row_header << "Favourite Product"
-      row_header << "Address 1"
-      row_header << "Address 2"
-      row_header << "City"
-      row_header << "County"
-      row_header << "Postcode"
-      row_header << "Country"
-      self.item_additional_fields.each do |item_additional_field|
-        row_header << item_additional_field.label
-      end
-      array_output << row_header
-
-      # Populate Content
-
-      self.item_entries.each do |item_entry|
-        row_line = []
-        row_line << item_entry.first_name
-        row_line << item_entry.last_name
-        row_line << item_entry.email
-        row_line << item_entry.favourite_product
-        row_line << item_entry.address_1
-        row_line << item_entry.address_2
-        row_line << item_entry.city
-        row_line << item_entry.county
-        row_line << item_entry.postcode
-        row_line << item_entry.country
-        competition_item_entry_additional_fields = Competition::ItemEntryAdditionalField.find(:all, :conditions => { :competition_item_entry_id => item_entry.id })
-        self.item_additional_fields.each do |item_additional_field|
-          competition_item_entry_additional_fields.each do |item_entry_additional_field|
-            if item_entry_additional_field.competition_item_additional_field_id == item_additional_field.id
-              row_line << item_entry_additional_field.value
-            end
-          end
-        end
-        array_output << row_line
-      end
-
-      # Build CSV
-
-      require 'csv'
-      csv_output = CSV.generate do |csv|
-        array_output.each do |row|
+      CSV.generate do |csv|
+        contents.each do |row|
           csv << row
         end
       end
-
-      return csv_output
     end
 
-  end
+    private
+    def get_csv_header
+      csv_header = []
+      additional_field_column_headers = get_additional_field_column_headers
 
+      csv_header.concat(get_column_headers_human)
+      csv_header.concat(additional_field_column_headers) if additional_field_column_headers.length > 0
+
+      csv_header
+    end
+
+    def get_column_headers
+      return [] if self.item_entries.length < 1
+
+      column_headers = []
+      entry_class = self.item_entries.first.class.name.constantize
+      entry_class.column_names.each do |col|
+        column_headers << col if !EXPORT_IGNORED_FIELDS.include?(col.to_sym)
+      end
+
+      column_headers
+    end
+
+    def get_column_headers_human
+      get_column_headers.map { |col| col.humanize }
+    end
+
+    def get_additional_field_column_headers
+      self.item_additional_fields.map { |i| i.label }
+    end
+
+    def get_csv_body
+      body = []
+      column_headers = get_column_headers()
+
+      self.item_entries.each do |item_entry|
+        body << get_field_values(column_headers, item_entry).concat(get_additional_field_values(item_entry))
+      end
+
+      body
+    end
+
+    def get_field_values(column_headers, item_entry)
+      column_headers.map { |col| item_entry[col] }
+    end
+
+    def get_additional_field_values(item_entry)
+      item_entry.item_entry_additional_fields.map { |field| field.value }
+    end
+  end
 end

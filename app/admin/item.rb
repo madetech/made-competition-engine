@@ -55,7 +55,7 @@ if defined?(ActiveAdmin) and Competition.config.engine_active_admin
 
     member_action :entries do
       respond_to do |format|
-        format.csv { render text: Competition::Item.find(params[:id]).populateEntriesCsv }
+        format.csv { render text: Competition::Item.find(params[:id]).export_entries_as_csv }
       end
     end
   end
