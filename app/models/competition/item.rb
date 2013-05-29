@@ -58,11 +58,7 @@ module Competition
     end
 
     def has_additional_fields
-      if self.item_additional_fields.blank?
-        return false
-      else
-        return true
-      end
+      return !self.item_additional_fields.blank?
     end
 
     def is_entered(entry, additional_fields = nil)
@@ -102,18 +98,22 @@ module Competition
     end
 
     def export_entries_as_csv
-      contents = []
-      contents << get_csv_header
-      contents.concat(get_csv_body)
+      # We (very unfortunately) need to drop out of AR at this point for performance reasons.
+      results = execute_csv_export
 
       CSV.generate do |csv|
-        contents.each do |row|
+        csv << get_csv_header
+        results.each(:as => :array) do |row|
           csv << row
         end
       end
     end
 
     private
+    def execute_csv_export
+      ActiveRecord::Base.connection.execute(get_export_sql)
+    end
+
     def get_csv_header
       csv_header = []
       additional_field_column_headers = get_additional_field_column_headers
@@ -141,26 +141,54 @@ module Competition
     end
 
     def get_additional_field_column_headers
-      self.item_additional_fields.map { |i| i.label }
+      self.item_additional_fields.map { |field| field.label }
     end
 
-    def get_csv_body
-      body = []
-      column_headers = get_column_headers()
+    def get_export_sql
+      columns = get_export_columns_sql
 
-      self.item_entries.each do |item_entry|
-        body << get_field_values(column_headers, item_entry).concat(get_additional_field_values(item_entry))
+      """
+        SELECT #{columns} #{get_additional_fields_sql} FROM `#{Competition::ItemEntry.table_name}`
+        #{get_additional_field_aliases_sql}
+        WHERE `#{Competition::ItemEntry.table_name}`.`competition_item_id` = #{self.id}
+        GROUP BY `#{Competition::ItemEntry.table_name}`.id
+      """
+    end
+
+    def get_export_columns_sql
+      sql = ""
+      after = ", "
+      column_headers = get_column_headers
+      column_headers.each_with_index do |col, index|
+        after = "" if index+1 == column_headers.length
+        sql.concat("`#{Competition::ItemEntry.table_name}`.#{col}#{after}")
       end
 
-      body
+      sql
     end
 
-    def get_field_values(column_headers, item_entry)
-      column_headers.map { |col| item_entry[col] }
+    def get_additional_fields_sql
+      sql = ""
+      before = ", "
+      self.item_additional_fields.each_with_index do |field, index|
+        after = "" if index == self.item_additional_fields.length
+        sql.concat("#{before}additional_field_#{field.id}.value")
+      end
+
+      sql
     end
 
-    def get_additional_field_values(item_entry)
-      item_entry.item_entry_additional_fields.map { |field| field.value }
+    def get_additional_field_aliases_sql
+      sql = ""
+      self.item_additional_fields.each do |field|
+        sql.concat """
+            LEFT JOIN `#{Competition::ItemEntryAdditionalField.table_name}` AS additional_field_#{field.id} ON
+            `additional_field_#{field.id}`.`competition_item_entry_id` = `#{Competition::ItemEntry.table_name}`.`id`
+            AND `additional_field_#{field.id}`.`competition_item_additional_field_id` = #{field.id}
+          """
+      end
+
+      sql
     end
   end
 end
