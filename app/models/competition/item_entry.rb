@@ -17,10 +17,21 @@ module Competition
                                     :county,
                                     :postcode,
                                     :country,
-                                    :competition_item_id
+                                    :competition_item_id,
+                                    :item,
+                                    :created_at
 
-    validates_format_of             :email, :with => /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/
-    validates_uniqueness_of         :email, :scope => :competition_item_id
+    validates_format_of             :email,
+                                    :with => /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/
+
+    validates_uniqueness_of         :email,
+                                    :scope => :competition_item_id,
+                                    :unless => :monthly_competition?
+
+    validates                       :email,
+                                    :"competition/competition_validators/monthly_entry_limit" => true,
+                                    :if => :monthly_competition?
+
     validates_presence_of           :first_name,
                                     :last_name,
                                     :address_1,
@@ -28,5 +39,10 @@ module Competition
                                     :postcode,
                                     :country,
                                     :competition_item_id
+
+    private
+    def monthly_competition?
+      item.monthly
+    end
   end
 end
