@@ -1,4 +1,5 @@
 require 'competition/engine'
+require Competition::Engine.root.join('app', 'validators', 'competition')
 require 'stringex'
 
 module Competition
@@ -31,10 +32,13 @@ module Competition
     initializer :competition do
       ActiveAdmin.application.load_paths.unshift Dir[Competition::Engine.root.join('app', 'admin')] if defined?(ActiveAdmin)
     end
+
+    ActiveModel::Validations.__send__(:include, Competition::CompetitionValidators)
   end
 
   def self.config(&block)
     yield self if block
+
     return self
   end
 end

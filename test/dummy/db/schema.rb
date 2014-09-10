@@ -11,40 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130121150732) do
-
-  create_table "active_admin_comments", :force => true do |t|
-    t.string   "resource_id",   :null => false
-    t.string   "resource_type", :null => false
-    t.integer  "author_id"
-    t.string   "author_type"
-    t.text     "body"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
-    t.string   "namespace"
-  end
-
-  add_index "active_admin_comments", ["author_type", "author_id"], :name => "index_active_admin_comments_on_author_type_and_author_id"
-  add_index "active_admin_comments", ["namespace"], :name => "index_active_admin_comments_on_namespace"
-  add_index "active_admin_comments", ["resource_type", "resource_id"], :name => "index_admin_notes_on_resource_type_and_resource_id"
-
-  create_table "admin_users", :force => true do |t|
-    t.string   "email",                  :default => "", :null => false
-    t.string   "encrypted_password",     :default => "", :null => false
-    t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          :default => 0
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
-  end
-
-  add_index "admin_users", ["email"], :name => "index_admin_users_on_email", :unique => true
-  add_index "admin_users", ["reset_password_token"], :name => "index_admin_users_on_reset_password_token", :unique => true
+ActiveRecord::Schema.define(:version => 20130930084629) do
 
   create_table "competition_item_additional_fields", :force => true do |t|
     t.integer  "competition_item_id"
@@ -55,22 +22,26 @@ ActiveRecord::Schema.define(:version => 20130121150732) do
     t.integer  "item_id"
   end
 
+  add_index "competition_item_additional_fields", ["competition_item_id"], :name => "index_competition_item_additional_fields_on_competition_item_id"
+
   create_table "competition_item_entries", :force => true do |t|
     t.string   "first_name"
     t.string   "last_name"
     t.string   "email"
-    t.string   "favourite_product"
     t.string   "address_1"
     t.string   "address_2"
     t.string   "city"
     t.string   "county"
     t.string   "postcode"
     t.string   "country"
-    t.string   "promotional_code"
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
     t.integer  "competition_item_id"
+    t.string   "type"
   end
+
+  add_index "competition_item_entries", ["competition_item_id"], :name => "index_competition_item_entries_on_competition_item_id"
+  add_index "competition_item_entries", ["type"], :name => "index_competition_item_entries_on_type"
 
   create_table "competition_item_entry_additional_fields", :force => true do |t|
     t.integer  "competition_item_additional_field_id"
@@ -80,10 +51,12 @@ ActiveRecord::Schema.define(:version => 20130121150732) do
     t.datetime "updated_at",                           :null => false
   end
 
+  add_index "competition_item_entry_additional_fields", ["competition_item_entry_id"], :name => "competition_item_entry_id_index"
+
   create_table "competition_items", :force => true do |t|
     t.string   "title"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
     t.text     "description"
     t.datetime "start_at"
     t.datetime "end_at"
@@ -91,7 +64,16 @@ ActiveRecord::Schema.define(:version => 20130121150732) do
     t.string   "image_content_type"
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
-    t.string   "slug"
+    t.string   "url"
+    t.integer  "order",              :default => 9999
+    t.text     "terms"
+    t.string   "type"
+    t.boolean  "monthly",            :default => false
   end
+
+  add_index "competition_items", ["end_at"], :name => "index_competition_items_on_end_at"
+  add_index "competition_items", ["start_at"], :name => "index_competition_items_on_start_at"
+  add_index "competition_items", ["type"], :name => "index_competition_items_on_type"
+  add_index "competition_items", ["url"], :name => "index_competition_items_on_url"
 
 end
