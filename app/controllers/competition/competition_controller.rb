@@ -10,7 +10,7 @@ module Competition
     def new
       @competition_item = Competition::Item.find_by_url(params[:slug])
       @item_entry = Competition.config.competition_item_entry_class.new
-      if !@competition_item.is_live
+      if !@competition_item.is_live?
         render :action => :expired
       elsif @competition_item.nil?
         redirect_to :action => :index
@@ -23,9 +23,9 @@ module Competition
       @item_entry = Competition.config.competition_item_entry_class.new(params[:item_entry])
       @item_entry.competition_item_id = @competition_item.id
 
-      if !@competition_item.is_live
+      if !@competition_item.is_live?
         render :action => :expired
-      elsif @competition_item.is_entered(@item_entry, params[:item_entry_additional_field])
+      elsif @competition_item.is_entered?(@item_entry, params[:item_entry_additional_field])
         redirect_to :action => :thanks
       else
         render :action => :new

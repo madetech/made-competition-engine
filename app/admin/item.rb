@@ -1,5 +1,5 @@
 if defined?(ActiveAdmin) and Competition.config.engine_active_admin
-  ActiveAdmin.register Competition::Item do
+  ActiveAdmin.register Competition.config.competition_item_class do
     controller do
       cache_sweeper Competition.config.cache_sweeper if Competition.config.cache_sweeper
     end
@@ -36,6 +36,14 @@ if defined?(ActiveAdmin) and Competition.config.engine_active_admin
         f.input :order,         :hint => 'Order that the competition appears in on the site'
         f.input :start_at,      :wrapper_html => { :class => "default" }, :as => :datepicker
         f.input :end_at,        :wrapper_html => { :class => "default" }, :as => :datepicker
+      end
+
+      f.inputs "Images" do
+        f.has_many :item_images do |f_images|
+          f_images.input :order
+          f_images.input :image, :wrapper_html => { :class => "default" }, :as => :file,
+                                 :hint => f.template.image_tag(f_images.object.image.url(:thumb))
+        end
       end
 
       f.inputs "Additional Fields" do

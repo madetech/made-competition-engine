@@ -18,18 +18,17 @@ module Competition
     validates_presence_of               :value
 
     def self.create_from_form(item_entry_id, item_entry_additional_field)
-    	item_entry_additional_field.each do |item_additional_field_id, value_object|
-    		value = value_object[:value]
-    		item_entry_additional_field = Competition::ItemEntryAdditionalField.create({
-    			:competition_item_entry_id => item_entry_id,
-    			:competition_item_additional_field_id => item_additional_field_id,
-    			:value => value
-    		})
-        if !item_entry_additional_field.valid?
-          return false
-        end
-    	end
-      return true
+      item_entry_additional_field.each do |item_additional_field_id, value_object|
+        item_entry_additional_field = Competition::ItemEntryAdditionalField.create({
+          :competition_item_entry_id => item_entry_id,
+          :competition_item_additional_field_id => item_additional_field_id,
+          :value => value_object[:value]
+        })
+
+        return false unless item_entry_additional_field.valid?
+      end
+
+      true
     end
   end
 end

@@ -46,14 +46,14 @@ describe "Competition::Item" do
 		item = Competition::Item.create(FactoryGirl.attributes_for(:item, start_at: DateTime.now-3.months, end_at: DateTime.now+3.months))
 		item.save
 		#---
-		item.is_live.should be_true
+		item.is_live?.should be_true
 	end
 
 	it "should not be live" do
 		item = Competition::Item.create(FactoryGirl.attributes_for(:item, start_at: DateTime.now+3.months, end_at: DateTime.now+6.months))
 		item.save
 		#---
-		item.is_live.should_not be_true
+		item.is_live?.should_not be_true
 	end
 
 end

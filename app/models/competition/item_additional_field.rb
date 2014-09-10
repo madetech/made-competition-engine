@@ -1,7 +1,5 @@
 module Competition
-
   class ItemAdditionalField < ActiveRecord::Base
-
     belongs_to                          :item, :foreign_key => :competition_item_id
     accepts_nested_attributes_for       :item, :allow_destroy => true
 

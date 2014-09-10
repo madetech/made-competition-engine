@@ -16,6 +16,9 @@ module Competition
     has_many                          :item_additional_fields, :foreign_key => :competition_item_id
     accepts_nested_attributes_for     :item_additional_fields, :allow_destroy => true
 
+    has_many                          :item_images, :foreign_key => :competition_item_id
+    accepts_nested_attributes_for     :item_images, :allow_destroy => true
+
     attr_accessible                   :title,
                                       :url,
                                       :description,
@@ -28,21 +31,18 @@ module Competition
                                       :image_updated_at,
                                       :item_additional_field,
                                       :item_additional_fields_attributes,
+                                      :item_images_attributes,
                                       :order,
-                                      :terms
+                                      :terms,
+                                      :monthly
 
-    has_attached_file                 :image, :styles => {
-                                        :main => Competition.config.main_item_image_size,
-                                        :secondary => Competition.config.secondary_item_image_size,
-                                        :mobile => Competition.config.mobile_item_image_size,
-                                        :thumb => Competition.config.item_thumb_size
-                                      }
+    has_attached_file                 :image, :styles => Competition.config.image_styles
 
     validates                         :title, :presence => true, :uniqueness => true
     validates                         :description, :presence => true
     validates                         :start_at, :presence => true
     validates                         :end_at, :presence => true
-    validates                         :image, :presence => true
+    validates                         :image, :presence => true, :if => Proc.new { |i| i.image_required? }
     validates                         :order, :presence => true
 
     acts_as_url                       :title
@@ -57,12 +57,12 @@ module Competition
       title
     end
 
-    def has_additional_fields
+    def has_additional_fields?
       return !self.item_additional_fields.blank?
     end
 
-    def is_entered(entry, additional_fields = nil)
-      if self.has_additional_fields
+    def is_entered?(entry, additional_fields = nil)
+      if self.has_additional_fields?
         return (entry.save and Competition::ItemEntryAdditionalField.create_from_form(entry.id, additional_fields))
       else
         return entry.save
@@ -73,7 +73,7 @@ module Competition
       self.where("start_at < ? AND end_at > ?", DateTime.now, DateTime.now)
     end
 
-    def is_live
+    def is_live?
       self.start_at < DateTime.now and self.end_at > DateTime.now
     end
 
@@ -97,6 +97,10 @@ module Competition
       self.title
     end
 
+    def image_required?
+      true
+    end
+
     def export_entries_as_csv
       # We (very unfortunately) need to drop out of AR at this point for performance reasons.
       results = execute_csv_export
@@ -110,6 +114,7 @@ module Competition
     end
 
     private
+
     def execute_csv_export
       ActiveRecord::Base.connection.execute(get_export_sql)
     end
