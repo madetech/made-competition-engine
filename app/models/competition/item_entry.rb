@@ -42,7 +42,7 @@ module Competition
 
     private
     def monthly_competition?
-      item.monthly
+      !item.nil? and item.monthly
     end
   end
 end
